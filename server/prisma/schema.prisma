@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         String   // admin, doctor, nurse, receptionist
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  appointments Appointment[]
+  visits       Visit[]
+}
+
+model Patient {
+  id                String   @id @default(cuid())
+  firstName         String
+  lastName          String
+  cardNumber        String?  // patient card number
+  issue             String?  // patient issue / chief complaint
+  age               Int?     // age in years
+  dateOfBirth       DateTime? // optional, unused
+  gender            String?
+  phone             String?
+  email             String?
+  address           String?
+  insuranceInfo     String?
+  emergencyContact  String?
+  bloodType         String?
+  allergies         String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  appointments Appointment[]
+  visits       Visit[]
+}
+
+model Appointment {
+  id         String   @id @default(cuid())
+  patientId String
+  userId     String   // doctor
+  date       DateTime
+  time       String
+  status     String   // scheduled, cancelled, completed, no-show
+  reason     String?
+  notes      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visits  Visit[]
+}
+
+model Visit {
+  id             String   @id @default(cuid())
+  patientId      String
+  userId         String   // doctor
+  appointmentId  String?
+  date           DateTime
+  chiefComplaint String?
+  vitals         String?  // JSON: { bp, temp, pulse, weight }
+  diagnosis      String?
+  notes          String?
+  prescriptions  String?  // JSON array
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  patient     Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+}
