@@ -2,10 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
+  const { user } = useAuth()
 
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -16,6 +18,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const nav = [
     { href: '/dashboard', label: 'Dashboard' },
     { href: '/patients', label: 'Patients' },
+    ...(user?.role === 'admin' ? [{ href: '/staff', label: 'Staff' }] : []),
   ]
 
   return (

@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
 import Patient from '@/models/Patient'
+import { getAuthFromRequest } from '@/lib/auth'
+import { canEditPatients } from '@/lib/rbac'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export async function GET(request: NextRequest) {
   try {
+    const auth = await getAuthFromRequest(request)
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     await connectDB()
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')?.trim()
@@ -73,6 +77,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await getAuthFromRequest(request)
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!canEditPatients(auth)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     await connectDB()
     const body = await request.json()
     const { name, age, gender, phone, address, location, temperament } = body

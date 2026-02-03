@@ -9,6 +9,7 @@ import VisitForm from '@/components/VisitForm'
 import VisitTimeline from '@/components/VisitTimeline'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import PrintPrescription from '@/components/PrintPrescription'
+import { useAuth, canEditPatients, canEditVisits } from '@/context/AuthContext'
 
 type Patient = {
   _id: string
@@ -34,6 +35,9 @@ type Visit = {
 export default function PatientDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { user } = useAuth()
+  const canEdit = canEditPatients(user?.role)
+  const canEditVisit = canEditVisits(user?.role)
   const id = params.id as string
   const [patient, setPatient] = useState<Patient | null>(null)
   const [visits, setVisits] = useState<Visit[]>([])
@@ -136,7 +140,7 @@ export default function PatientDetailPage() {
         </Link>
       </div>
 
-      {editMode ? (
+      {editMode && canEdit ? (
         <div className="mb-8">
           <PatientForm
             initial={{
@@ -174,40 +178,44 @@ export default function PatientDetailPage() {
                 <p className="text-slate-600 text-sm sm:text-base break-words">Address: {patient.address}</p>
               )}
             </div>
-            <div className="flex gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={() => setEditMode(true)}
-                className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => setDeletePatientConfirm(true)}
-                className="rounded border border-red-200 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-red-700 hover:bg-red-50 touch-manipulation flex-1 sm:flex-none"
-              >
-                Delete
-              </button>
-            </div>
+            {canEdit && (
+              <div className="flex gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setEditMode(true)}
+                  className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeletePatientConfirm(true)}
+                  className="rounded border border-red-200 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-red-700 hover:bg-red-50 touch-manipulation flex-1 sm:flex-none"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
 
           <section className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <h2 className="text-base sm:text-lg font-semibold text-slate-900">Visit history</h2>
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingVisit(null)
-                  setShowVisitForm(true)
-                }}
-                className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
-              >
-                Add visit
-              </button>
+              {canEditVisit && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingVisit(null)
+                    setShowVisitForm(true)
+                  }}
+                  className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
+                >
+                  Add visit
+                </button>
+              )}
             </div>
 
-            {showVisitForm && (
+            {canEditVisit && showVisitForm && (
               <div className="mb-6">
                 <VisitForm
                   patientId={id}
@@ -230,8 +238,8 @@ export default function PatientDetailPage() {
 
             <VisitTimeline
               visits={visits}
-              onEdit={handleEditVisit}
-              onDelete={(visitId) => setDeleteVisitId(visitId)}
+              onEdit={canEditVisit ? handleEditVisit : undefined}
+              onDelete={canEditVisit ? (visitId) => setDeleteVisitId(visitId) : undefined}
               onPrint={(visit) => setPrintVisit(visit)}
             />
           </section>

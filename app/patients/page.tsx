@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PatientForm from '@/components/PatientForm'
 import { GENDERS } from '@/lib/constants'
+import { useAuth, canEditPatients as canEdit } from '@/context/AuthContext'
 
 type Patient = {
   _id: string
@@ -21,6 +22,8 @@ type Patient = {
 const LIMIT_OPTIONS = [10, 20, 30, 50]
 
 export default function PatientsPage() {
+  const { user } = useAuth()
+  const canAddPatient = canEdit(user?.role)
   const [patients, setPatients] = useState<Patient[]>([])
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -111,13 +114,15 @@ export default function PatientsPage() {
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
         <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Patients</h1>
-        <button
-          type="button"
-          onClick={() => setShowForm(true)}
-          className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
-        >
-          Add patient
-        </button>
+        {canAddPatient && (
+          <button
+            type="button"
+            onClick={() => setShowForm(true)}
+            className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
+          >
+            Add patient
+          </button>
+        )}
       </div>
 
       {/* Filters */}
@@ -209,7 +214,7 @@ export default function PatientsPage() {
         </div>
       </div>
 
-      {showForm && (
+      {canAddPatient && showForm && (
         <div className="mb-6">
           <PatientForm onCancel={() => setShowForm(false)} onSaved={handleCreated} />
         </div>

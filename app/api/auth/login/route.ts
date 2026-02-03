@@ -23,9 +23,11 @@ export async function POST(request: NextRequest) {
     if (!valid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
+    const role = (doctor as { role?: string }).role || 'doctor'
     const token = await createToken({
       sub: doctor._id.toString(),
       email: doctor.email,
+      role,
     })
     const config = getAuthCookieConfig()
     const res = NextResponse.json({ success: true })

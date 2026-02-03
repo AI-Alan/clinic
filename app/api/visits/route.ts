@@ -3,11 +3,15 @@ import mongoose from 'mongoose'
 import { connectDB } from '@/lib/db'
 import Visit from '@/models/Visit'
 import Patient from '@/models/Patient'
+import { getAuthFromRequest } from '@/lib/auth'
+import { canEditVisits } from '@/lib/rbac'
 
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {
   try {
+    const auth = await getAuthFromRequest(request)
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const { searchParams } = new URL(request.url)
     const patientId = searchParams.get('patientId')
     if (!patientId) {
@@ -39,6 +43,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const auth = await getAuthFromRequest(request)
+    if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    if (!canEditVisits(auth)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     await connectDB()
     const body = await request.json()
     const { patientId, date, symptoms, diagnosis, medicines, notes } = body
