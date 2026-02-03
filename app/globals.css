@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Safe area for notched phones */
+@supports (padding: env(safe-area-inset-top)) {
+  .safe-area-inset-top {
+    padding-top: max(0.75rem, env(safe-area-inset-top));
+  }
+}

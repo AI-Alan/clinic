@@ -10,6 +10,7 @@ import VisitTimeline from '@/components/VisitTimeline'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import PrintPrescription from '@/components/PrintPrescription'
 import { useAuth, canEditPatients, canEditVisits } from '@/context/AuthContext'
+import { apiFetch } from '@/lib/apiClient'
 
 type Patient = {
   _id: string
@@ -57,7 +58,7 @@ export default function PatientDetailPage() {
 
   function loadPatient() {
     setLoading(true)
-    fetch(`/api/patients/${id}`, { cache: 'no-store', credentials: 'include' })
+    apiFetch(`/api/patients/${id}`, { cache: 'no-store' })
       .then((res) => {
         if (res.status === 404) {
           router.push('/patients')
@@ -74,7 +75,7 @@ export default function PatientDetailPage() {
   }
 
   function loadVisits() {
-    fetch(`/api/visits?patientId=${id}`, { cache: 'no-store', credentials: 'include' })
+    apiFetch(`/api/visits?patientId=${id}`, { cache: 'no-store' })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => setVisits(Array.isArray(data) ? data : []))
       .catch(() => setVisits([]))
@@ -87,7 +88,7 @@ export default function PatientDetailPage() {
 
   function handleDeletePatient() {
     setDeleting(true)
-    fetch(`/api/patients/${id}`, { method: 'DELETE' })
+    apiFetch(`/api/patients/${id}`, { method: 'DELETE' })
       .then((res) => {
         if (res.ok) router.push('/patients')
       })
@@ -100,7 +101,7 @@ export default function PatientDetailPage() {
   function handleDeleteVisit() {
     if (!deleteVisitId) return
     setDeletingVisit(true)
-    fetch(`/api/visits/${deleteVisitId}`, { method: 'DELETE' })
+    apiFetch(`/api/visits/${deleteVisitId}`, { method: 'DELETE' })
       .then((res) => {
         if (res.ok) loadVisits()
       })
@@ -134,7 +135,7 @@ export default function PatientDetailPage() {
       <div className="mb-4">
         <Link
           href="/patients"
-          className="text-sm text-slate-600 hover:text-slate-900 py-2 inline-block touch-manipulation"
+          className="text-sm text-slate-600 hover:text-slate-900 py-2.5 inline-block touch-manipulation min-h-[44px] sm:min-h-0 flex items-center"
         >
           ← Back to patients
         </Link>

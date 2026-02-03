@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Layout from '@/components/Layout'
 import { useAuth } from '@/context/AuthContext'
 import StaffForm from '@/components/StaffForm'
+import { apiFetch } from '@/lib/apiClient'
 import ConfirmDialog from '@/components/ConfirmDialog'
 
 type StaffMember = {
@@ -30,7 +31,7 @@ export default function StaffPage() {
       router.replace('/dashboard')
       return
     }
-    fetch('/api/staff', { credentials: 'include' })
+    apiFetch('/api/staff')
       .then((res) => {
         if (res.status === 403) {
           router.replace('/dashboard')
@@ -46,7 +47,7 @@ export default function StaffPage() {
   function handleSaved() {
     setShowForm(false)
     setEditing(null)
-    fetch('/api/staff', { credentials: 'include' })
+    apiFetch('/api/staff')
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => setStaff(Array.isArray(data) ? data : []))
   }
@@ -54,7 +55,7 @@ export default function StaffPage() {
   function handleDeleteConfirm() {
     if (!deleteId) return
     setDeleting(true)
-    fetch(`/api/staff/${deleteId}`, { method: 'DELETE', credentials: 'include' })
+    apiFetch(`/api/staff/${deleteId}`, { method: 'DELETE' })
       .then((res) => {
         if (res.ok) handleSaved()
       })
@@ -97,23 +98,23 @@ export default function StaffPage() {
 
       <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-slate-500">Loading…</div>
+          <div className="p-4 sm:p-8 text-center text-slate-500 text-sm sm:text-base">Loading…</div>
         ) : staff.length === 0 ? (
-          <div className="p-8 text-center text-slate-500">No staff yet.</div>
+          <div className="p-4 sm:p-8 text-center text-slate-500 text-sm sm:text-base">No staff yet.</div>
         ) : (
           <ul className="divide-y divide-slate-200">
             {staff.map((s) => (
-              <li key={s._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-4 py-3">
-                <div>
-                  <p className="font-medium text-slate-900">{s.email}</p>
+              <li key={s._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-slate-900 truncate">{s.email}</p>
                   <p className="text-sm text-slate-500 capitalize">{s.role}</p>
-                  {s.name && <p className="text-sm text-slate-600">{s.name}</p>}
+                  {s.name && <p className="text-sm text-slate-600 break-words">{s.name}</p>}
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => { setEditing(s); setShowForm(false); }}
-                    className="rounded border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                    className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation"
                   >
                     Edit
                   </button>
@@ -121,7 +122,7 @@ export default function StaffPage() {
                     type="button"
                     onClick={() => setDeleteId(s._id)}
                     disabled={user?.id === s._id}
-                    className="rounded border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50"
+                    className="rounded border border-red-200 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 touch-manipulation"
                   >
                     Delete
                   </button>

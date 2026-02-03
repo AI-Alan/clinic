@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { apiFetch } from '@/lib/apiClient'
 
 const ROLES = ['admin', 'doctor', 'nurse'] as const
 
@@ -41,10 +42,9 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
       }
       if (!isEdit) body.password = password
       else if (password) body.password = password
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(body),
       })
       const data = await res.json()
@@ -61,8 +61,8 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full max-w-md">
-      <h2 className="text-lg font-semibold text-slate-900 mb-4">
+    <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full max-w-md overflow-hidden">
+      <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
         {isEdit ? 'Edit staff' : 'Add staff'}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +79,7 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isEdit}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900 disabled:bg-slate-100"
+            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 disabled:bg-slate-100 min-h-[44px] sm:min-h-0"
           />
           {isEdit && <p className="text-xs text-slate-500 mt-1">Email cannot be changed.</p>}
         </div>
@@ -93,7 +93,7 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
             onChange={(e) => setPassword(e.target.value)}
             required={!isEdit}
             minLength={6}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900"
+            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
           />
         </div>
         <div>
@@ -101,7 +101,7 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900"
+            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
           >
             {ROLES.map((r) => (
               <option key={r} value={r}>{r}</option>
@@ -114,21 +114,21 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900"
+            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col-reverse sm:flex-row gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-slate-800 text-white px-4 py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50"
+            className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
           >
             {loading ? 'Saving…' : isEdit ? 'Update' : 'Add'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
           >
             Cancel
           </button>

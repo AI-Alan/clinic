@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/db'
 import Doctor from '@/models/Doctor'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canAccessStaff } from '@/lib/rbac'
+import { getApiErrorResponse } from '@/lib/apiError'
 import bcrypt from 'bcryptjs'
 
 export const dynamic = 'force-dynamic'
@@ -20,10 +21,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(staff)
   } catch (err) {
     console.error('Staff list error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }
 
@@ -60,9 +59,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(out, { status: 201 })
   } catch (err) {
     console.error('Staff create error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }

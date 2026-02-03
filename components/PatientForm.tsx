@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { TEMPERAMENT_OPTIONS, GENDERS } from '@/lib/constants'
+import { apiFetch } from '@/lib/apiClient'
 
 type PatientFormProps = {
   initial?: {
@@ -52,10 +53,9 @@ export default function PatientForm({
     try {
       const url = isEdit ? `/api/patients/${patientId}` : '/api/patients'
       const method = isEdit ? 'PUT' : 'POST'
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify({
           name: name.trim(),
           age: ageNum,

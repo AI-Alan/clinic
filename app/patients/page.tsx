@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Layout from '@/components/Layout'
 import PatientForm from '@/components/PatientForm'
 import { GENDERS } from '@/lib/constants'
+import { apiFetch } from '@/lib/apiClient'
 import { useAuth, canEditPatients as canEdit } from '@/context/AuthContext'
 
 type Patient = {
@@ -56,7 +57,7 @@ export default function PatientsPage() {
     if (appliedDateTo) params.set('dateTo', appliedDateTo)
     params.set('page', String(page))
     params.set('limit', String(limit))
-    fetch(`/api/patients?${params}`, { cache: 'no-store', credentials: 'include' })
+    apiFetch(`/api/patients?${params}`, { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) return { patients: [], total: 0, totalPages: 0 }
         return res.json()

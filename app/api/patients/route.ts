@@ -3,6 +3,7 @@ import { connectDB } from '@/lib/db'
 import Patient from '@/models/Patient'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canEditPatients } from '@/lib/rbac'
+import { getApiErrorResponse } from '@/lib/apiError'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -68,10 +69,8 @@ export async function GET(request: NextRequest) {
     return res
   } catch (err) {
     console.error('Patients list error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }
 
@@ -101,9 +100,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(patient, { status: 201 })
   } catch (err) {
     console.error('Patient create error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }

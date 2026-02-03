@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { connectDB } from '@/lib/db'
 import Doctor from '@/models/Doctor'
 import { createToken, getAuthCookieConfig } from '@/lib/auth'
+import { getApiErrorResponse } from '@/lib/apiError'
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,9 +36,7 @@ export async function POST(request: NextRequest) {
     return res
   } catch (err) {
     console.error('Login error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }

@@ -5,6 +5,7 @@ import Visit from '@/models/Visit'
 import Patient from '@/models/Patient'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canEditVisits } from '@/lib/rbac'
+import { getApiErrorResponse } from '@/lib/apiError'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,10 +35,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(visits)
   } catch (err) {
     console.error('Visits list error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }
 
@@ -80,9 +79,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(visit, { status: 201 })
   } catch (err) {
     console.error('Visit create error:', err)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    const { status, message } = getApiErrorResponse(err)
+    return NextResponse.json({ error: message }, { status })
   }
 }

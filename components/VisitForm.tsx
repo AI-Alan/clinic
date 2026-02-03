@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { apiFetch } from '@/lib/apiClient'
 
 type Medicine = { name: string; dosage: string; duration: string }
 
@@ -79,10 +80,9 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
         payload.patientId = patientId
       }
 
-      const res = await fetch(url, {
+      const res = await apiFetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(payload),
       })
       const data = await res.json()
@@ -116,7 +116,7 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="w-full min-w-0 max-w-xs rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="w-full min-w-0 sm:max-w-xs rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
           />
         </div>
         <div>
@@ -143,7 +143,7 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
             <button
               type="button"
               onClick={addMedicine}
-              className="text-sm text-slate-600 hover:text-slate-900"
+              className="text-sm text-slate-600 hover:text-slate-900 py-2 touch-manipulation"
             >
               + Add medicine
             </button>

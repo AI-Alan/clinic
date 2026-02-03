@@ -57,7 +57,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onPrint(v)}
-                        className="text-xs text-slate-500 hover:text-slate-700 py-1 touch-manipulation"
+                        className="text-sm text-slate-500 hover:text-slate-700 py-2 px-3 rounded border border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
                       >
                         Print
                       </button>
@@ -66,7 +66,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onEdit(v)}
-                        className="text-xs text-slate-500 hover:text-slate-700 py-1 touch-manipulation"
+                        className="text-sm text-slate-500 hover:text-slate-700 py-2 px-3 rounded border border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
                       >
                         Edit
                       </button>
@@ -75,7 +75,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onDelete(v._id)}
-                        className="text-xs text-red-500 hover:text-red-700 py-1 touch-manipulation"
+                        className="text-sm text-red-500 hover:text-red-700 py-2 px-3 rounded border border-red-100 hover:border-red-200 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
                       >
                         Delete
                       </button>

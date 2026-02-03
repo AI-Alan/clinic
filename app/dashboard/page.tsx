@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import Layout from '@/components/Layout'
+import { apiFetch } from '@/lib/apiClient'
 
 export default function DashboardPage() {
   const pathname = usePathname()
@@ -11,7 +12,7 @@ export default function DashboardPage() {
 
   const fetchTotal = useCallback(() => {
     setTotal(null)
-    fetch('/api/patients?limit=1', { cache: 'no-store', credentials: 'include' })
+    apiFetch('/api/patients?limit=1', { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) return res.json().then(() => ({ total: 0 }))
         return res.json()
