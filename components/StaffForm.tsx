@@ -61,30 +61,30 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full max-w-md overflow-hidden">
-      <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
+    <div className="bg-white rounded-lg border-2 border-slate-300 p-4 sm:p-6 shadow-sm w-full max-w-md overflow-hidden">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
         {isEdit ? 'Edit staff' : 'Add staff'}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <p className="text-base font-semibold text-red-700 bg-red-50 border-2 border-red-300 rounded px-3 py-2">
             {error}
           </p>
         )}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Email *</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Email *</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isEdit}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 disabled:bg-slate-100 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full disabled:bg-slate-100"
           />
-          {isEdit && <p className="text-xs text-slate-500 mt-1">Email cannot be changed.</p>}
+          {isEdit && <p className="text-sm text-slate-500 mt-1">Email cannot be changed.</p>}
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">
+          <label className="block text-base font-bold text-gray-800 mb-1.5">
             Password {isEdit ? '(leave blank to keep)' : '*'}
           </label>
           <input
@@ -93,15 +93,15 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
             onChange={(e) => setPassword(e.target.value)}
             required={!isEdit}
             minLength={6}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Role *</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Role *</label>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           >
             {ROLES.map((r) => (
               <option key={r} value={r}>{r}</option>
@@ -109,26 +109,26 @@ export default function StaffForm({ initial, onCancel, onSaved }: StaffFormProps
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Name</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Name</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           />
         </div>
         <div className="flex flex-col-reverse sm:flex-row gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
+            className="btn-primary px-4 py-3 w-full sm:w-auto"
           >
             {loading ? 'Saving…' : isEdit ? 'Update' : 'Add'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
+            className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
           >
             Cancel
           </button>

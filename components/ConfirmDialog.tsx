@@ -27,15 +27,15 @@ export default function ConfirmDialog({
         className="absolute inset-0 bg-black/50"
         onClick={onCancel}
       />
-      <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3 sm:mx-4 p-4 sm:p-6 max-h-[90vh] overflow-y-auto">
-        <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-2">{title}</h3>
-        <p className="text-sm text-slate-600 mb-6 break-words">{message}</p>
+      <div className="relative bg-white rounded-lg shadow-lg max-w-md w-full mx-3 sm:mx-4 p-4 sm:p-6 max-h-[90vh] overflow-y-auto border-2 border-slate-300">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">{title}</h3>
+        <p className="text-base font-semibold text-gray-700 mb-6 break-words">{message}</p>
         <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3">
           <button
             type="button"
             onClick={onCancel}
             disabled={loading}
-            className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
+            className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
           >
             {cancelLabel}
           </button>
@@ -43,11 +43,11 @@ export default function ConfirmDialog({
             type="button"
             onClick={onConfirm}
             disabled={loading}
-            className={`rounded px-4 py-3 sm:py-2 text-sm font-medium text-white disabled:opacity-50 touch-manipulation w-full sm:w-auto ${
+            className={
               isDestructive
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-slate-800 hover:bg-slate-700'
-            }`}
+                ? 'rounded px-4 py-3 text-base font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 touch-manipulation w-full sm:w-auto'
+                : 'btn-primary px-4 py-3 w-full sm:w-auto'
+            }
           >
             {loading ? 'Please wait…' : confirmLabel}
           </button>

@@ -2,12 +2,15 @@
 
 import { useState } from 'react'
 import { apiFetch } from '@/lib/apiClient'
+import { TEMPERAMENT_OPTIONS } from '@/lib/constants'
 
 type Medicine = { name: string; dosage: string; duration: string }
 
 type VisitFormProps = {
   patientId: string
   visitId?: string
+  /** Current patient temperament (stored on patient, can be set/updated from this form) */
+  patientTemperament?: string
   initial?: {
     date: string
     symptoms: string
@@ -19,7 +22,7 @@ type VisitFormProps = {
   onSaved: () => void
 }
 
-export default function VisitForm({ patientId, visitId, initial, onCancel, onSaved }: VisitFormProps) {
+export default function VisitForm({ patientId, visitId, patientTemperament = '', initial, onCancel, onSaved }: VisitFormProps) {
   const isEdit = !!visitId
 
   const [date, setDate] = useState(
@@ -29,6 +32,7 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
   )
   const [symptoms, setSymptoms] = useState(initial?.symptoms ?? '')
   const [diagnosis, setDiagnosis] = useState(initial?.diagnosis ?? '')
+  const [temperament, setTemperament] = useState(patientTemperament ?? '')
   const [notes, setNotes] = useState(initial?.notes ?? '')
   const [medicines, setMedicines] = useState<Medicine[]>(
     initial?.medicines?.length
@@ -75,6 +79,7 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
             duration: m.duration.trim(),
           })),
       }
+      if (temperament.trim()) payload.temperament = temperament.trim()
 
       if (!isEdit) {
         payload.patientId = patientId
@@ -99,83 +104,116 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full max-w-2xl overflow-hidden">
-      <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
+    <div className="bg-white rounded-lg border-2 border-slate-300 p-4 sm:p-6 shadow-sm w-full max-w-5xl mx-auto overflow-hidden">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
         {isEdit ? 'Edit visit' : 'Add visit'}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <p className="text-base font-semibold text-red-700 bg-red-50 border-2 border-red-300 rounded px-3 py-2">
             {error}
           </p>
         )}
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Date & time *</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Date & time *</label>
           <input
             type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
-            className="w-full min-w-0 sm:max-w-xs rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full min-w-0 sm:max-w-xs"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Symptoms</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Symptoms</label>
           <textarea
             value={symptoms}
             onChange={(e) => setSymptoms(e.target.value)}
             rows={2}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="input-accent w-full"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Diagnosis</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Diagnosis</label>
           <textarea
             value={diagnosis}
             onChange={(e) => setDiagnosis(e.target.value)}
             rows={2}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="input-accent w-full"
           />
         </div>
         <div>
-          <div className="flex items-center justify-between mb-1">
-            <label className="block text-sm font-medium text-slate-700">Medicines (Homeopathic)</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Temperament (saved on patient; applies to all visits until changed)</label>
+          <select
+            value={temperament}
+            onChange={(e) => setTemperament(e.target.value)}
+            className="input-accent w-full"
+          >
+            <option value="">Select (optional)</option>
+            {TEMPERAMENT_OPTIONS.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-base font-bold text-gray-800">Medicines (Homeopathic)</label>
             <button
               type="button"
               onClick={addMedicine}
-              className="text-sm text-slate-600 hover:text-slate-900 py-2 touch-manipulation"
+              className="text-base font-bold text-gray-700 hover:text-gray-900 py-2 touch-manipulation"
             >
               + Add medicine
             </button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {medicines.map((m, i) => (
-              <div key={i} className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2 p-2 sm:p-2.5 bg-slate-50 rounded">
+              <div key={i} className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 p-4 bg-slate-50 rounded-lg border-2 border-slate-200">
                 <input
                   type="text"
                   placeholder="Remedy (e.g. Arnica montana)"
                   value={m.name}
                   onChange={(e) => updateMedicine(i, 'name', e.target.value)}
-                  className="flex-1 min-w-0 rounded border border-slate-300 px-3 py-2.5 sm:py-1.5 text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addMedicine()
+                    }
+                  }}
+                  className="input-accent flex-1 min-w-0"
                 />
                 <input
                   type="text"
                   placeholder="Potency (e.g. 30C, 200C)"
                   value={m.dosage}
                   onChange={(e) => updateMedicine(i, 'dosage', e.target.value)}
-                  className="w-full sm:w-28 rounded border border-slate-300 px-3 py-2.5 sm:py-1.5 text-sm min-w-0"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addMedicine()
+                    }
+                  }}
+                  className="input-accent w-full sm:w-36 min-w-0"
                 />
                 <input
                   type="text"
                   placeholder="Dosage / Duration (e.g. 4 pills TDS, 7 days)"
                   value={m.duration}
                   onChange={(e) => updateMedicine(i, 'duration', e.target.value)}
-                  className="flex-1 min-w-0 rounded border border-slate-300 px-3 py-2.5 sm:py-1.5 text-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      addMedicine()
+                    }
+                  }}
+                  className="input-accent flex-1 min-w-0"
                 />
                 <button
                   type="button"
                   onClick={() => removeMedicine(i)}
-                  className="text-slate-500 hover:text-red-600 text-sm py-2 sm:py-1 touch-manipulation self-start sm:self-center"
+                  className="text-gray-700 hover:text-red-700 text-base font-bold py-3 px-3 touch-manipulation self-start sm:self-center"
                 >
                   Remove
                 </button>
@@ -184,26 +222,26 @@ export default function VisitForm({ patientId, visitId, initial, onCancel, onSav
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Notes</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Notes</label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full rounded border border-slate-300 px-3 py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="input-accent w-full"
           />
         </div>
         <div className="flex flex-col-reverse sm:flex-row gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
+            className="btn-primary px-4 py-3 w-full sm:w-auto"
           >
             {loading ? 'Saving…' : isEdit ? 'Update visit' : 'Add visit'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
+            className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
           >
             Cancel
           </button>

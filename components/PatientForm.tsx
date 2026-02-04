@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { TEMPERAMENT_OPTIONS, GENDERS } from '@/lib/constants'
+import { GENDERS } from '@/lib/constants'
 import { apiFetch } from '@/lib/apiClient'
 
 type PatientFormProps = {
@@ -12,7 +12,6 @@ type PatientFormProps = {
     phone?: string
     address?: string
     location?: string
-    temperament?: string
   }
   patientId?: string
   onCancel: () => void
@@ -31,7 +30,6 @@ export default function PatientForm({
   const [phone, setPhone] = useState(initial?.phone ?? '')
   const [address, setAddress] = useState(initial?.address ?? '')
   const [location, setLocation] = useState(initial?.location ?? '')
-  const [temperament, setTemperament] = useState(initial?.temperament ?? '')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -63,7 +61,6 @@ export default function PatientForm({
           phone: phone.trim(),
           address: address.trim(),
           location: location.trim(),
-          temperament: temperament.trim() || undefined,
         }),
       })
       const data = await res.json()
@@ -80,29 +77,29 @@ export default function PatientForm({
   }
 
   return (
-    <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full max-w-2xl">
-      <h2 className="text-base sm:text-lg font-semibold text-slate-900 mb-4">
+    <div className="bg-white rounded-lg border-2 border-slate-300 p-4 sm:p-6 shadow-sm w-full max-w-2xl">
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
         {isEdit ? 'Edit patient' : 'Add patient'}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4 w-full">
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <p className="text-base font-semibold text-red-700 bg-red-50 border-2 border-red-300 rounded px-3 py-2">
             {error}
           </p>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Name *</label>
+            <label className="block text-base font-bold text-gray-800 mb-1.5">Name *</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+              className="input-accent w-full"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Age *</label>
+            <label className="block text-base font-bold text-gray-800 mb-1.5">Age *</label>
             <input
               type="number"
               min={0}
@@ -110,17 +107,17 @@ export default function PatientForm({
               value={age}
               onChange={(e) => setAge(e.target.value)}
               required
-              className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+              className="input-accent w-full"
             />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Gender *</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Gender *</label>
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
             required
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           >
             <option value="">Select</option>
             {GENDERS.map((g) => (
@@ -131,59 +128,44 @@ export default function PatientForm({
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Phone</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Phone</label>
           <input
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Address</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Address</label>
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Location</label>
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full"
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-1">Temperament</label>
-          <select
-            value={temperament}
-            onChange={(e) => setTemperament(e.target.value)}
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
-          >
-            <option value="">Select (optional)</option>
-            {TEMPERAMENT_OPTIONS.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
         </div>
         <div className="flex flex-col-reverse sm:flex-row gap-2">
           <button
             type="submit"
             disabled={loading}
-            className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 touch-manipulation w-full sm:w-auto"
+            className="btn-primary px-4 py-3 w-full sm:w-auto"
           >
             {loading ? 'Saving…' : isEdit ? 'Update' : 'Add patient'}
           </button>
           <button
             type="button"
             onClick={onCancel}
-            className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
+            className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation w-full sm:w-auto"
           >
             Cancel
           </button>

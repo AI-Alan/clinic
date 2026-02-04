@@ -9,6 +9,7 @@ export type User = {
   id: string
   email: string
   role: Role
+  name?: string
 }
 
 type AuthContextType = {
@@ -33,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetch('/api/auth/me', { credentials: 'include' })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (data && data.role) setUser({ id: data.id, email: data.email, role: data.role })
+        if (data && data.role) setUser({ id: data.id, email: data.email, role: data.role, name: data.name })
         else setUser(null)
       })
       .catch(() => setUser(null))

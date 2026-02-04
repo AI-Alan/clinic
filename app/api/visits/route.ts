@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (!canEditVisits(auth)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     await connectDB()
     const body = await request.json()
-    const { patientId, date, symptoms, diagnosis, medicines, notes } = body
+    const { patientId, date, symptoms, diagnosis, medicines, notes, temperament } = body
     if (!patientId || !date) {
       return NextResponse.json(
         { error: 'patientId and date are required' },
@@ -76,6 +76,9 @@ export async function POST(request: NextRequest) {
       medicines: meds,
       notes: String(notes ?? '').trim(),
     })
+    if (temperament != null && String(temperament).trim()) {
+      await Patient.findByIdAndUpdate(patientId, { $set: { temperament: String(temperament).trim() } })
+    }
     return NextResponse.json(visit, { status: 201 })
   } catch (err) {
     console.error('Visit create error:', err)

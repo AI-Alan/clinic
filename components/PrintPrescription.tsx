@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { CLINIC_NAME } from '@/lib/constants'
 
 type Medicine = { name: string; dosage: string; duration: string }
 
@@ -116,8 +117,8 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
       </head>
       <body>
         <div class="header">
-          <div class="clinic-name">Dr. Clinic</div>
-          <div class="clinic-info">Healthcare Services</div>
+          <div class="clinic-name">${CLINIC_NAME}</div>
+          <div class="clinic-info">Electrohomopathy Clinic</div>
         </div>
 
         <div class="patient-info">
@@ -213,14 +214,14 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
             <button
               type="button"
               onClick={handlePrint}
-              className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation flex-1 sm:flex-none"
+              className="btn-primary px-4 py-3 flex-1 sm:flex-none"
             >
               Print
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
+              className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
             >
               Close
             </button>
@@ -229,8 +230,8 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
 
         <div ref={printRef} className="p-4 sm:p-6 overflow-x-auto">
           <div className="text-center border-b-2 border-slate-300 pb-4 mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900">Dr. Clinic</h2>
-            <p className="text-xs sm:text-sm text-slate-500">Healthcare Services</p>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900">{CLINIC_NAME}</h2>
+            <p className="text-xs sm:text-sm text-slate-500">Electrohomopathy Clinic</p>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-4 p-3 bg-slate-50 rounded text-sm break-words">

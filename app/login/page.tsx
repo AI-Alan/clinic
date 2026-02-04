@@ -1,7 +1,10 @@
 'use client'
 
 import { Suspense, useState } from 'react'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { CLINIC_NAME } from '@/lib/constants'
+import { useAccent } from '@/context/AccentContext'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -11,6 +14,7 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const from = searchParams.get('from') || '/dashboard'
+  const { accent, toggleAccent } = useAccent()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,18 +41,19 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm bg-white rounded-lg shadow-sm border border-slate-200 p-6 sm:p-8">
-      <h1 className="text-xl font-semibold text-slate-900 mb-6 text-center">
-        Clinic Login
+    <div className="w-full max-w-sm bg-white rounded-lg shadow-md border-2 border-slate-300 border-t-4 border-t-[var(--color-primary)] p-6 sm:p-8">
+      <h1 className="text-2xl font-bold text-gray-900 mb-1 text-center">
+        {CLINIC_NAME}
       </h1>
+      <p className="text-base font-semibold text-gray-600 mb-6 text-center">Login</p>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">
+          <p className="text-base font-semibold text-red-700 bg-red-50 border-2 border-red-300 rounded px-3 py-2">
             {error}
           </p>
         )}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="email" className="block text-base font-bold text-gray-800 mb-1">
             Email
           </label>
           <input
@@ -58,11 +63,11 @@ function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="email"
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full min-h-[48px]"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+          <label htmlFor="password" className="block text-base font-bold text-gray-800 mb-1">
             Password
           </label>
           <input
@@ -72,16 +77,33 @@ function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
-            className="w-full rounded border border-slate-300 px-3 py-2.5 sm:py-2 text-slate-900 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500 min-h-[44px] sm:min-h-0"
+            className="input-accent w-full min-h-[48px]"
           />
         </div>
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded bg-slate-800 text-white py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 disabled:opacity-50 touch-manipulation"
+          className="btn-primary w-full py-3"
         >
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
+        <p className="text-center pt-2">
+          <Link
+            href="/login/forgot"
+            className="text-base font-semibold text-slate-600 hover:text-slate-800 underline"
+          >
+            Forgot password?
+          </Link>
+        </p>
+        <p className="text-center pt-1">
+          <button
+            type="button"
+            onClick={toggleAccent}
+            className="text-base font-semibold text-slate-600 hover:text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-[var(--color-ring)] rounded px-1"
+          >
+            {accent === 'blue' ? 'Green accent' : 'Blue accent'} (click to switch)
+          </button>
+        </p>
       </form>
     </div>
   )

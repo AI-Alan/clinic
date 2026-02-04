@@ -1,3 +1,5 @@
+export const CLINIC_NAME = 'Rezru Electrohomopathy'
+
 export const TEMPERAMENT_OPTIONS = [
   'Sanguine Temperament',
   'Bilious (Choleric) Temperament',

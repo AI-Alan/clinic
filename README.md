@@ -40,11 +40,18 @@ Personal clinic management for a single doctor. Next.js (App Router), MongoDB (M
 - **scripts/seed.js** – Seeds single doctor account
 - **middleware.ts** – Protects all routes except `/login`; protects API except login/logout
 
+## Deployment
+
+1. Set production env (e.g. on host): `MONGODB_URI` (e.g. MongoDB Atlas URI), `JWT_SECRET` (strong random secret).
+2. Build and start: `npm run build && npm start`.
+3. Optional: run `npm run db:seed` once against the production DB to create the initial doctor (or use existing credentials).
+4. All routes except `/login` and `/login/forgot` require auth; API routes (except login/logout) require a valid JWT cookie.
+
 ## API
 
 - `POST /api/auth/login` – body: `{ email, password }`
 - `POST /api/auth/logout`
-- `GET /api/patients` – optional `?search=`
+- `GET /api/patients` – optional `?search=`, filters, pagination
 - `POST /api/patients` – body: patient fields
 - `GET/PUT/DELETE /api/patients/[id]`
 - `GET /api/visits?patientId=...`

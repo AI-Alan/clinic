@@ -68,7 +68,7 @@ export default function StaffPage() {
   if (authLoading || (user && user.role !== 'admin')) {
     return (
       <Layout>
-        <div className="py-8 text-slate-500">Loading…</div>
+        <div className="py-8 text-gray-700 text-base font-bold">Loading…</div>
       </Layout>
     )
   }
@@ -76,11 +76,11 @@ export default function StaffPage() {
   return (
     <Layout>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-slate-900">Staff</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Staff</h1>
         <button
           type="button"
           onClick={() => { setShowForm(true); setEditing(null); }}
-          className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
+          className="btn-primary px-4 py-3 w-full sm:w-auto"
         >
           Add staff
         </button>
@@ -96,25 +96,25 @@ export default function StaffPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg border-2 border-slate-300 shadow-sm overflow-hidden">
         {loading ? (
-          <div className="p-4 sm:p-8 text-center text-slate-500 text-sm sm:text-base">Loading…</div>
+          <div className="p-4 sm:p-8 text-center text-gray-700 text-base font-bold">Loading…</div>
         ) : staff.length === 0 ? (
-          <div className="p-4 sm:p-8 text-center text-slate-500 text-sm sm:text-base">No staff yet.</div>
+          <div className="p-4 sm:p-8 text-center text-gray-700 text-base font-bold">No staff yet.</div>
         ) : (
-          <ul className="divide-y divide-slate-200">
+          <ul className="divide-y-2 divide-slate-200">
             {staff.map((s) => (
               <li key={s._id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-3 sm:px-4 py-3">
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-slate-900 truncate">{s.email}</p>
-                  <p className="text-sm text-slate-500 capitalize">{s.role}</p>
-                  {s.name && <p className="text-sm text-slate-600 break-words">{s.name}</p>}
+                  <p className="font-bold text-gray-900 truncate text-base">{s.email}</p>
+                  <p className="text-base font-semibold text-gray-700 capitalize">{s.role}</p>
+                  {s.name && <p className="text-base font-medium text-gray-700 break-words">{s.name}</p>}
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => { setEditing(s); setShowForm(false); }}
-                    className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation"
+                    className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation"
                   >
                     Edit
                   </button>
@@ -122,7 +122,7 @@ export default function StaffPage() {
                     type="button"
                     onClick={() => setDeleteId(s._id)}
                     disabled={user?.id === s._id}
-                    className="rounded border border-red-200 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-50 touch-manipulation"
+                    className="rounded border-2 border-red-300 bg-white px-4 py-3 text-base font-bold text-red-700 hover:bg-red-50 disabled:opacity-50 touch-manipulation"
                   >
                     Delete
                   </button>

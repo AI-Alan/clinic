@@ -2,6 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accent colors: blue (default, soft blue + white) | emerald (green) | slate (gray) */
+:root,
+[data-accent="blue"] {
+  --color-primary: #2F80ED;
+  --color-primary-hover: #2563eb;
+  --color-ring: #60a5fa;
+  --color-timeline-dot: #93c5fd;
+  --color-nav-active: #2F80ED;
+  --page-bg: #F4F8FB;
+}
+[data-accent="emerald"] {
+  --color-primary: #047857;
+  --color-primary-hover: #065f46;
+  --color-ring: #059669;
+  --color-timeline-dot: #10b981;
+  --color-nav-active: #047857;
+  --page-bg: #f8fafc;
+}
+
+/* Primary button - respects accent, clear focus for keyboard */
+@layer components {
+  .btn-primary {
+    @apply rounded text-white text-base font-bold py-3 disabled:opacity-50 touch-manipulation focus:outline-none;
+    background-color: var(--color-primary);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-hover);
+  }
+  .btn-primary:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-ring);
+  }
+  .input-accent {
+    @apply rounded border-2 border-slate-300 px-3 py-2.5 text-base font-medium text-gray-900 focus:outline-none min-h-[44px];
+  }
+  .input-accent::placeholder {
+    @apply text-gray-500;
+  }
+  .input-accent:focus {
+    border-color: var(--color-ring);
+    box-shadow: 0 0 0 2px var(--color-ring);
+  }
+  .input-accent:focus-visible {
+    outline: none;
+  }
+  .timeline-dot {
+    background-color: var(--color-timeline-dot);
+  }
+  /* Active nav link uses accent in both themes */
+  .nav-link-active {
+    color: var(--color-nav-active);
+  }
+}
+
+/* Senior-friendly: larger base font, high contrast, relaxed line-height */
+html {
+  font-size: 18px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 20px;
+  }
+}
+
 /* Safe area for notched phones */
 @supports (padding: env(safe-area-inset-top)) {
   .safe-area-inset-top {

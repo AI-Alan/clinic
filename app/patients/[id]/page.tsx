@@ -56,6 +56,9 @@ export default function PatientDetailPage() {
   // Print prescription
   const [printVisit, setPrintVisit] = useState<Visit | null>(null)
 
+  // Success message (auto-hide after 3s)
+  const [successMessage, setSuccessMessage] = useState('')
+
   function loadPatient() {
     setLoading(true)
     apiFetch(`/api/patients/${id}`, { cache: 'no-store' })
@@ -85,6 +88,12 @@ export default function PatientDetailPage() {
     loadPatient()
     loadVisits()
   }, [id])
+
+  useEffect(() => {
+    if (!successMessage) return
+    const t = setTimeout(() => setSuccessMessage(''), 3000)
+    return () => clearTimeout(t)
+  }, [successMessage])
 
   function handleDeletePatient() {
     setDeleting(true)
@@ -119,13 +128,15 @@ export default function PatientDetailPage() {
   function handleVisitSaved() {
     setShowVisitForm(false)
     setEditingVisit(null)
+    setSuccessMessage('Visit saved.')
     loadVisits()
+    loadPatient()
   }
 
   if (loading || !patient) {
     return (
       <Layout>
-        <div className="py-8 text-slate-500">Loading…</div>
+        <div className="py-8 text-gray-700 text-base font-bold">Loading…</div>
       </Layout>
     )
   }
@@ -135,11 +146,17 @@ export default function PatientDetailPage() {
       <div className="mb-4">
         <Link
           href="/patients"
-          className="text-sm text-slate-600 hover:text-slate-900 py-2.5 inline-block touch-manipulation min-h-[44px] sm:min-h-0 flex items-center"
+          className="btn-primary inline-flex items-center px-4 py-3 min-h-[44px]"
         >
           ← Back to patients
         </Link>
       </div>
+
+      {successMessage && (
+        <div className="mb-4 rounded-lg bg-green-100 border-2 border-green-400 px-4 py-3 text-base font-bold text-green-800" role="alert">
+          {successMessage}
+        </div>
+      )}
 
       {editMode && canEdit ? (
         <div className="mb-8">
@@ -151,12 +168,12 @@ export default function PatientDetailPage() {
               phone: patient.phone,
               address: patient.address,
               location: patient.location,
-              temperament: patient.temperament,
             }}
             patientId={patient._id}
             onCancel={() => setEditMode(false)}
             onSaved={() => {
               setEditMode(false)
+              setSuccessMessage('Patient updated.')
               loadPatient()
             }}
           />
@@ -165,18 +182,21 @@ export default function PatientDetailPage() {
         <>
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
             <div className="min-w-0 flex-1">
-              <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 break-words">{patient.name}</h1>
-              <p className="text-slate-600 mt-1 text-sm sm:text-base">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{patient.name}</h1>
+              <p className="text-gray-700 mt-1 text-base font-semibold">
                 {patient.age} years · {patient.gender}
               </p>
               {patient.phone && (
-                <p className="text-slate-600 text-sm sm:text-base break-all">Phone: {patient.phone}</p>
+                <p className="text-gray-700 text-base font-medium break-all">Phone: {patient.phone}</p>
               )}
               {patient.location && (
-                <p className="text-slate-600 text-sm sm:text-base break-words">Location: {patient.location}</p>
+                <p className="text-gray-700 text-base font-medium break-words">Location: {patient.location}</p>
               )}
               {patient.address && (
-                <p className="text-slate-600 text-sm sm:text-base break-words">Address: {patient.address}</p>
+                <p className="text-gray-700 text-base font-medium break-words">Address: {patient.address}</p>
+              )}
+              {patient.temperament && (
+                <p className="text-gray-700 text-base font-medium">Temperament: {patient.temperament}</p>
               )}
             </div>
             {canEdit && (
@@ -184,14 +204,14 @@ export default function PatientDetailPage() {
                 <button
                   type="button"
                   onClick={() => setEditMode(true)}
-                  className="rounded border border-slate-300 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
+                  className="rounded border-2 border-slate-400 bg-white px-4 py-3 text-base font-bold text-gray-800 hover:bg-slate-50 touch-manipulation flex-1 sm:flex-none"
                 >
                   Edit
                 </button>
                 <button
                   type="button"
                   onClick={() => setDeletePatientConfirm(true)}
-                  className="rounded border border-red-200 bg-white px-4 py-3 sm:py-2 text-sm font-medium text-red-700 hover:bg-red-50 touch-manipulation flex-1 sm:flex-none"
+                  className="rounded border-2 border-red-300 bg-white px-4 py-3 text-base font-bold text-red-700 hover:bg-red-50 touch-manipulation flex-1 sm:flex-none"
                 >
                   Delete
                 </button>
@@ -201,7 +221,7 @@ export default function PatientDetailPage() {
 
           <section className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900">Visit history</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Visit history</h2>
               {canEditVisit && (
                 <button
                   type="button"
@@ -209,7 +229,7 @@ export default function PatientDetailPage() {
                     setEditingVisit(null)
                     setShowVisitForm(true)
                   }}
-                  className="rounded bg-slate-800 text-white px-4 py-3 sm:py-2 text-sm font-medium hover:bg-slate-700 touch-manipulation w-full sm:w-auto"
+                  className="btn-primary px-4 py-3 w-full sm:w-auto"
                 >
                   Add visit
                 </button>
@@ -217,10 +237,11 @@ export default function PatientDetailPage() {
             </div>
 
             {canEditVisit && showVisitForm && (
-              <div className="mb-6">
+              <div className="mb-6 flex justify-center">
                 <VisitForm
                   patientId={id}
                   visitId={editingVisit?._id}
+                  patientTemperament={patient.temperament ?? ''}
                   initial={editingVisit ? {
                     date: editingVisit.date,
                     symptoms: editingVisit.symptoms,

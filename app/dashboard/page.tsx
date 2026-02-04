@@ -38,15 +38,18 @@ export default function DashboardPage() {
 
   return (
     <Layout>
-      <h1 className="text-xl sm:text-2xl font-semibold text-slate-900 mb-4 sm:mb-6">Dashboard</h1>
-      <div className="bg-white rounded-lg border border-slate-200 p-4 sm:p-6 shadow-sm w-full">
-        <p className="text-slate-600 mb-2 text-sm sm:text-base">Total patients</p>
-        <p className="text-2xl sm:text-3xl font-semibold text-slate-900">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">Dashboard</h1>
+      <div className="bg-white rounded-lg border-2 border-slate-300 border-l-4 border-l-[var(--color-primary)] p-4 sm:p-6 shadow-sm w-full">
+        <p className="text-gray-700 mb-2 text-base font-bold">Total patients</p>
+        <p className="text-3xl sm:text-4xl font-bold text-gray-900">
           {total === null ? '—' : total}
+        </p>
+        <p className="text-base font-medium text-gray-700 mt-2">
+          Use <strong>Patients</strong> in the menu above to see the list or add a new patient.
         </p>
         <Link
           href="/patients"
-          className="inline-block mt-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 touch-manipulation"
+          className="btn-primary inline-block mt-4 px-4 py-2"
         >
           View all patients →
         </Link>

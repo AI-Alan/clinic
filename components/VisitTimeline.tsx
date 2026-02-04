@@ -25,7 +25,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
 
   if (sortedVisits.length === 0) {
     return (
-      <p className="text-slate-500 text-sm">No visits yet.</p>
+      <p className="text-gray-600 text-base font-semibold">No visits yet.</p>
     )
   }
 
@@ -46,10 +46,10 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
           })
           return (
             <li key={v._id} className="relative pl-8 sm:pl-10">
-              <div className="absolute left-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-300 border-2 border-white" />
-              <div className="bg-white rounded-lg border border-slate-200 p-3 sm:p-4 shadow-sm overflow-hidden">
+              <div className="absolute left-0 w-6 h-6 sm:w-7 sm:h-7 rounded-full timeline-dot border-2 border-white" />
+              <div className="bg-white rounded-lg border-2 border-slate-200 p-3 sm:p-4 shadow-sm overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-1">
-                  <p className="text-xs sm:text-sm font-medium text-slate-500 shrink-0">
+                  <p className="text-sm sm:text-base font-medium text-slate-600 shrink-0">
                     {dateStr} · {timeStr}
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -57,7 +57,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onPrint(v)}
-                        className="text-sm text-slate-500 hover:text-slate-700 py-2 px-3 rounded border border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
+                        className="text-base font-bold text-slate-600 hover:text-slate-800 py-2 px-3 rounded border-2 border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px]"
                       >
                         Print
                       </button>
@@ -66,7 +66,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onEdit(v)}
-                        className="text-sm text-slate-500 hover:text-slate-700 py-2 px-3 rounded border border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
+                        className="text-base font-bold text-slate-600 hover:text-slate-800 py-2 px-3 rounded border-2 border-slate-200 hover:border-slate-300 touch-manipulation min-h-[44px]"
                       >
                         Edit
                       </button>
@@ -75,7 +75,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                       <button
                         type="button"
                         onClick={() => onDelete(v._id)}
-                        className="text-sm text-red-500 hover:text-red-700 py-2 px-3 rounded border border-red-100 hover:border-red-200 touch-manipulation min-h-[44px] sm:min-h-0 sm:py-1 sm:px-0 sm:border-0"
+                        className="text-base font-bold text-red-600 hover:text-red-800 py-2 px-3 rounded border-2 border-red-200 hover:border-red-300 touch-manipulation min-h-[44px]"
                       >
                         Delete
                       </button>
@@ -83,17 +83,17 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                   </div>
                 </div>
                 {v.symptoms && (
-                  <p className="text-xs sm:text-sm text-slate-700 mb-1 break-words">
+                  <p className="text-sm sm:text-base text-slate-700 mb-1 break-words">
                     <span className="font-medium text-slate-600">Symptoms:</span> {v.symptoms}
                   </p>
                 )}
                 {v.diagnosis && (
-                  <p className="text-xs sm:text-sm text-slate-700 mb-1 break-words">
+                  <p className="text-sm sm:text-base text-slate-700 mb-1 break-words">
                     <span className="font-medium text-slate-600">Diagnosis:</span> {v.diagnosis}
                   </p>
                 )}
                 {v.medicines && v.medicines.length > 0 && (
-                  <div className="text-xs sm:text-sm text-slate-700 mb-1 break-words">
+                  <div className="text-sm sm:text-base text-slate-700 mb-1 break-words">
                     <span className="font-medium text-slate-600">Medicines (Homeopathic):</span>
                     <ul className="list-disc list-inside mt-0.5">
                       {v.medicines.map((m, i) => (
@@ -107,7 +107,7 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                   </div>
                 )}
                 {v.notes && (
-                  <p className="text-xs sm:text-sm text-slate-700 break-words">
+                  <p className="text-sm sm:text-base text-slate-700 break-words">
                     <span className="font-medium text-slate-600">Notes:</span> {v.notes}
                   </p>
                 )}

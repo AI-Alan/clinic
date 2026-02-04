@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import mongoose from 'mongoose'
 import { connectDB } from '@/lib/db'
 import Visit from '@/models/Visit'
+import Patient from '@/models/Patient'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canEditVisits } from '@/lib/rbac'
 import { getApiErrorResponse } from '@/lib/apiError'
@@ -46,7 +47,7 @@ export async function PUT(
     }
     await connectDB()
     const body = await request.json()
-    const { date, symptoms, diagnosis, medicines, notes } = body
+    const { date, symptoms, diagnosis, medicines, notes, temperament } = body
 
     const updateData: Record<string, unknown> = {}
     if (date !== undefined) updateData.date = new Date(date)
@@ -71,6 +72,12 @@ export async function PUT(
 
     if (!visit) {
       return NextResponse.json({ error: 'Visit not found' }, { status: 404 })
+    }
+    if (temperament != null && String(temperament).trim()) {
+      const patientId = (visit as { patientId?: unknown }).patientId
+      if (patientId && mongoose.Types.ObjectId.isValid(String(patientId))) {
+        await Patient.findByIdAndUpdate(patientId, { $set: { temperament: String(temperament).trim() } })
+      }
     }
     return NextResponse.json(visit)
   } catch (err) {
