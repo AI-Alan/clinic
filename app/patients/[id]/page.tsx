@@ -11,6 +11,7 @@ import ConfirmDialog from '@/components/ConfirmDialog'
 import PrintPrescription from '@/components/PrintPrescription'
 import { useAuth, canEditPatients, canEditVisits } from '@/context/AuthContext'
 import { apiFetch } from '@/lib/apiClient'
+import { toTitleCase } from '@/lib/formatText'
 
 type Patient = {
   _id: string
@@ -182,18 +183,18 @@ export default function PatientDetailPage() {
         <>
           <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6 sm:mb-8">
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{patient.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 break-words">{toTitleCase(patient.name)}</h1>
               <p className="text-gray-700 mt-1 text-base font-semibold">
-                {patient.age} years · {patient.gender}
+                {patient.age} years · {toTitleCase(patient.gender)}
               </p>
               {patient.phone && (
                 <p className="text-gray-700 text-base font-medium break-all">Phone: {patient.phone}</p>
               )}
               {patient.location && (
-                <p className="text-gray-700 text-base font-medium break-words">Location: {patient.location}</p>
+                <p className="text-gray-700 text-base font-medium break-words">Location: {toTitleCase(patient.location)}</p>
               )}
               {patient.address && (
-                <p className="text-gray-700 text-base font-medium break-words">Address: {patient.address}</p>
+                <p className="text-gray-700 text-base font-medium break-words">Address: {toTitleCase(patient.address)}</p>
               )}
               {patient.temperament && (
                 <p className="text-gray-700 text-base font-medium">Temperament: {patient.temperament}</p>
@@ -272,7 +273,7 @@ export default function PatientDetailPage() {
       {deletePatientConfirm && (
         <ConfirmDialog
           title="Delete Patient"
-          message={`Are you sure you want to delete ${patient.name}? This will also delete all their visit records. This action cannot be undone.`}
+          message={`Are you sure you want to delete ${toTitleCase(patient.name)}? This will also delete all their visit records. This action cannot be undone.`}
           confirmLabel="Delete"
           onConfirm={handleDeletePatient}
           onCancel={() => setDeletePatientConfirm(false)}

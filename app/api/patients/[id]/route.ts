@@ -6,6 +6,7 @@ import Visit from '@/models/Visit'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canEditPatients } from '@/lib/rbac'
 import { getApiErrorResponse } from '@/lib/apiError'
+import { toTitleCase } from '@/lib/formatText'
 
 export const dynamic = 'force-dynamic'
 
@@ -49,12 +50,12 @@ export async function PUT(
     const body = await request.json()
     const { name, age, gender, phone, address, location, temperament } = body
     const setUpdate: Record<string, unknown> = {}
-    if (name !== undefined) setUpdate.name = String(name).trim()
+    if (name !== undefined) setUpdate.name = toTitleCase(String(name).trim())
     if (age !== undefined) setUpdate.age = Number(age)
-    if (gender !== undefined) setUpdate.gender = String(gender).trim()
+    if (gender !== undefined) setUpdate.gender = toTitleCase(String(gender).trim())
     if (phone !== undefined) setUpdate.phone = String(phone).trim()
-    if (address !== undefined) setUpdate.address = String(address).trim()
-    if (location !== undefined) setUpdate.location = String(location).trim()
+    if (address !== undefined) setUpdate.address = toTitleCase(String(address).trim())
+    if (location !== undefined) setUpdate.location = toTitleCase(String(location).trim())
     if (temperament !== undefined) {
       const val = temperament ? String(temperament).trim() : null
       if (val) setUpdate.temperament = val

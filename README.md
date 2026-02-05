@@ -42,10 +42,11 @@ Personal clinic management for a single doctor. Next.js (App Router), MongoDB (M
 
 ## Deployment
 
-1. Set production env (e.g. on host): `MONGODB_URI` (e.g. MongoDB Atlas URI), `JWT_SECRET` (strong random secret).
-2. Build and start: `npm run build && npm start`.
-3. Optional: run `npm run db:seed` once against the production DB to create the initial doctor (or use existing credentials).
-4. All routes except `/login` and `/login/forgot` require auth; API routes (except login/logout) require a valid JWT cookie.
+1. **Environment**: Set `MONGODB_URI` (e.g. MongoDB Atlas URI) and `JWT_SECRET` (use a strong random secret in production).
+2. **Build**: `npm run build && npm start`.
+3. **Seed** (optional): Run `npm run db:seed` once against the production DB to create initial staff accounts.
+4. **Responsive**: All pages work on mobile and desktop; navbar collapses to a hamburger menu on small screens.
+5. All routes except `/login` and `/login/forgot` require auth; API routes (except login/logout) require a valid JWT cookie.
 
 ## API
 
@@ -55,4 +56,8 @@ Personal clinic management for a single doctor. Next.js (App Router), MongoDB (M
 - `POST /api/patients` – body: patient fields
 - `GET/PUT/DELETE /api/patients/[id]`
 - `GET /api/visits?patientId=...`
-- `POST /api/visits` – body: patientId, date, symptoms, diagnosis, medicines[], notes
+- `POST /api/visits` – body: patientId, date, symptoms, diagnosis, medicines[], medicinesParagraph, notes
+- `GET /api/appointments?date=YYYY-MM-DD` – returns queued and visited for that day
+- `POST /api/appointments` – body: patientId, date (add to queue)
+- `PUT /api/appointments/[id]` – body: order (reorder) or status: 'visited'
+- `DELETE /api/appointments/[id]` – remove from queue

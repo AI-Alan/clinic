@@ -47,12 +47,13 @@ export async function PUT(
     }
     await connectDB()
     const body = await request.json()
-    const { date, symptoms, diagnosis, medicines, notes, temperament } = body
+    const { date, symptoms, diagnosis, medicinesParagraph, medicines, notes, temperament } = body
 
     const updateData: Record<string, unknown> = {}
     if (date !== undefined) updateData.date = new Date(date)
     if (symptoms !== undefined) updateData.symptoms = String(symptoms).trim()
     if (diagnosis !== undefined) updateData.diagnosis = String(diagnosis).trim()
+    if (medicinesParagraph !== undefined) updateData.medicinesParagraph = String(medicinesParagraph).trim()
     if (notes !== undefined) updateData.notes = String(notes).trim()
     if (medicines !== undefined) {
       updateData.medicines = Array.isArray(medicines)

@@ -7,6 +7,7 @@ type Visit = {
   date: string
   symptoms: string
   diagnosis: string
+  medicinesParagraph?: string
   medicines: Medicine[]
   notes: string
 }
@@ -92,9 +93,19 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                     <span className="font-medium text-slate-600">Diagnosis:</span> {v.diagnosis}
                   </p>
                 )}
+                {v.medicinesParagraph && (
+                  <div className="text-lg sm:text-xl text-slate-700 mb-1 break-words whitespace-pre-wrap">
+                    <span className="font-medium text-slate-600">Medicines:</span>
+                    <p className="mt-0.5">{v.medicinesParagraph}</p>
+                  </div>
+                )}
                 {v.medicines && v.medicines.length > 0 && (
                   <div className="text-sm sm:text-base text-slate-700 mb-1 break-words">
-                    <span className="font-medium text-slate-600">Medicines (Homeopathic):</span>
+                    {v.medicinesParagraph ? (
+                      <span className="font-medium text-slate-600">Structured list:</span>
+                    ) : (
+                      <span className="font-medium text-slate-600">Medicines (Homeopathic):</span>
+                    )}
                     <ul className="list-disc list-inside mt-0.5">
                       {v.medicines.map((m, i) => (
                         <li key={i}>

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     if (!canEditVisits(auth)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     await connectDB()
     const body = await request.json()
-    const { patientId, date, symptoms, diagnosis, medicines, notes, temperament } = body
+    const { patientId, date, symptoms, diagnosis, medicinesParagraph, medicines, notes, temperament } = body
     if (!patientId || !date) {
       return NextResponse.json(
         { error: 'patientId and date are required' },
@@ -73,6 +73,7 @@ export async function POST(request: NextRequest) {
       date: new Date(date),
       symptoms: String(symptoms ?? '').trim(),
       diagnosis: String(diagnosis ?? '').trim(),
+      medicinesParagraph: String(medicinesParagraph ?? '').trim(),
       medicines: meds,
       notes: String(notes ?? '').trim(),
     })

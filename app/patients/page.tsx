@@ -8,6 +8,8 @@ import PatientForm from '@/components/PatientForm'
 import { GENDERS } from '@/lib/constants'
 import { apiFetch } from '@/lib/apiClient'
 import { useAuth, canEditPatients as canEdit } from '@/context/AuthContext'
+import { canAddToQueue } from '@/lib/rbac'
+import { toTitleCase } from '@/lib/formatText'
 
 type Patient = {
   _id: string
@@ -51,6 +53,13 @@ function PatientsPageContent() {
   const [refreshKey, setRefreshKey] = useState(0)
   const [showFilters, setShowFilters] = useState(false)
   const [showCreatedMessage, setShowCreatedMessage] = useState(false)
+  const [queuedPatientIds, setQueuedPatientIds] = useState<Set<string>>(new Set())
+  const [addingToQueueId, setAddingToQueueId] = useState<string | null>(null)
+
+  function todayISO(): string {
+    const d = new Date()
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
+  }
 
   // Sync from navbar: URL ?search=
   useEffect(() => {
@@ -95,6 +104,20 @@ function PatientsPageContent() {
     loadPatients()
   }, [loadPatients, isAddOnlyMode])
 
+  const canAdd = user ? canAddToQueue({ sub: user.id, email: user.email, role: user.role }) : false
+  useEffect(() => {
+    if (!canAdd) return
+    const date = todayISO()
+    apiFetch(`/api/appointments?date=${date}`, { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : { queued: [] }))
+      .then((data) => {
+        const list = Array.isArray(data.queued) ? data.queued : []
+        const ids = new Set<string>(list.map((a: { patientId: { _id?: string } | string }) => typeof a.patientId === 'object' && a.patientId?._id ? a.patientId._id : (a as { patientId: string }).patientId))
+        setQueuedPatientIds(ids)
+      })
+      .catch(() => setQueuedPatientIds(new Set()))
+  }, [canAdd, refreshKey])
+
   // Show "Patient added" when landing with ?created=1, then clear param after 4s
   const createdParam = searchParams.get('created')
   useEffect(() => {
@@ -112,6 +135,18 @@ function PatientsPageContent() {
   function handleCreated() {
     setPage(1)
     setRefreshKey((k) => k + 1)
+  }
+
+  async function handleAddToQueue(patientId: string) {
+    setAddingToQueueId(patientId)
+    const date = todayISO()
+    const res = await apiFetch('/api/appointments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ patientId, date }),
+    })
+    setAddingToQueueId(null)
+    if (res.ok) setQueuedPatientIds((prev) => new Set(prev).add(patientId))
   }
 
   function applyFilters() {
@@ -275,22 +310,44 @@ function PatientsPageContent() {
         ) : (
           <>
             <ul className="divide-y-2 divide-slate-200">
-              {patients.map((p) => (
-                <li key={p._id}>
-                  <Link
-                    href={`/patients/${p._id}`}
-                    className="block px-3 sm:px-4 py-3 hover:bg-slate-50 touch-manipulation active:bg-slate-100"
-                  >
-                    <span className="font-bold text-gray-900 block sm:inline text-base">{p.name}</span>
-                    <span className="text-gray-700 text-base font-medium block sm:inline sm:ml-2 mt-0.5 sm:mt-0 break-words">
-                      {p.age} yrs · {p.gender}
-                      {p.phone ? ` · ${p.phone}` : ''}
-                      {p.location ? ` · ${p.location}` : ''}
-                      {p.temperament ? ` · ${p.temperament}` : ''}
-                    </span>
-                  </Link>
-                </li>
-              ))}
+              {patients.map((p) => {
+                const inQueue = queuedPatientIds.has(p._id)
+                return (
+                  <li key={p._id} className="flex flex-col sm:flex-row sm:items-center gap-2 px-3 sm:px-4 py-3 hover:bg-slate-50 sm:gap-3">
+                    <Link
+                      href={`/patients/${p._id}`}
+                      className="flex-1 min-w-0 touch-manipulation active:bg-slate-100 rounded"
+                    >
+                      <span className="font-bold text-gray-900 block sm:inline text-base">{toTitleCase(p.name)}</span>
+                      <span className="text-gray-700 text-base font-medium block sm:inline sm:ml-2 mt-0.5 sm:mt-0 break-words">
+                        {p.age} yrs · {toTitleCase(p.gender)}
+                        {p.phone ? ` · ${p.phone}` : ''}
+                        {p.location ? ` · ${toTitleCase(p.location)}` : ''}
+                        {p.temperament ? ` · ${p.temperament}` : ''}
+                      </span>
+                    </Link>
+                    {canAdd && (
+                      <span className="shrink-0">
+                        {inQueue ? (
+                          <span className="text-sm font-medium text-slate-500 px-2 py-1.5">In queue</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              handleAddToQueue(p._id)
+                            }}
+                            disabled={!!addingToQueueId}
+                            className="btn-primary px-3 py-2 text-sm touch-manipulation disabled:opacity-50"
+                          >
+                            {addingToQueueId === p._id ? 'Adding…' : 'Add to queue'}
+                          </button>
+                        )}
+                      </span>
+                    )}
+                  </li>
+                )
+              })}
             </ul>
             {/* Pagination */}
             <div className="px-3 sm:px-4 py-3 border-t-2 border-slate-200 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-3">

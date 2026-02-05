@@ -10,8 +10,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'Rezru Electrohomopathy',
-  description: 'Rezru Electrohomopathy - Clinic management',
+  title: 'Rezru Electrohomeopathy',
+  description: 'Rezru Electrohomeopathy - Clinic management',
 }
 
 export const viewport: Viewport = {

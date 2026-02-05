@@ -16,6 +16,7 @@ type VisitFormProps = {
     symptoms: string
     diagnosis: string
     notes: string
+    medicinesParagraph?: string
     medicines: Medicine[]
   }
   onCancel: () => void
@@ -34,6 +35,7 @@ export default function VisitForm({ patientId, visitId, patientTemperament = '',
   const [diagnosis, setDiagnosis] = useState(initial?.diagnosis ?? '')
   const [temperament, setTemperament] = useState(patientTemperament ?? '')
   const [notes, setNotes] = useState(initial?.notes ?? '')
+  const [medicinesParagraph, setMedicinesParagraph] = useState(initial?.medicinesParagraph ?? '')
   const [medicines, setMedicines] = useState<Medicine[]>(
     initial?.medicines?.length
       ? initial.medicines
@@ -71,6 +73,7 @@ export default function VisitForm({ patientId, visitId, patientTemperament = '',
         symptoms: symptoms.trim(),
         diagnosis: diagnosis.trim(),
         notes: notes.trim(),
+        medicinesParagraph: medicinesParagraph.trim(),
         medicines: medicines
           .filter((m) => m.name.trim())
           .map((m) => ({
@@ -158,8 +161,18 @@ export default function VisitForm({ patientId, visitId, patientTemperament = '',
           </select>
         </div>
         <div>
+          <label className="block text-base font-bold text-gray-800 mb-1.5">Medicines (paragraph)</label>
+          <textarea
+            value={medicinesParagraph}
+            onChange={(e) => setMedicinesParagraph(e.target.value)}
+            rows={5}
+            placeholder="Free-text prescription (e.g. remedy names, potency, dosage, duration)"
+            className="input-accent w-full text-lg min-h-[120px]"
+          />
+        </div>
+        <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-base font-bold text-gray-800">Medicines (Homeopathic)</label>
+            <label className="block text-base font-bold text-gray-800">Structured list (optional)</label>
             <button
               type="button"
               onClick={addMedicine}

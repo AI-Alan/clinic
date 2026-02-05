@@ -17,3 +17,13 @@ export function canEditVisits(payload: TokenPayload | null): boolean {
 export function canAccessStaff(payload: TokenPayload | null): boolean {
   return payload?.role === 'admin'
 }
+
+export function canManageQueue(payload: TokenPayload | null): boolean {
+  if (!payload) return false
+  return payload.role === 'admin' || payload.role === 'doctor'
+}
+
+export function canAddToQueue(payload: TokenPayload | null): boolean {
+  if (!payload) return false
+  return payload.role === 'admin' || payload.role === 'doctor' || payload.role === 'nurse'
+}

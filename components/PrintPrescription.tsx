@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { CLINIC_NAME } from '@/lib/constants'
+import { toTitleCase } from '@/lib/formatText'
 
 type Medicine = { name: string; dosage: string; duration: string }
 
@@ -17,6 +18,7 @@ type PrintPrescriptionProps = {
     date: string
     symptoms: string
     diagnosis: string
+    medicinesParagraph?: string
     medicines: Medicine[]
     notes: string
   }
@@ -52,7 +54,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Prescription - ${patient.name}</title>
+        <title>Prescription - ${toTitleCase(patient.name)}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -85,6 +87,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
             color: #333;
           }
           .section-content { font-size: 14px; color: #555; }
+          .medicines-paragraph { font-size: 18px; line-height: 1.5; color: #333; }
           .medicines-table {
             width: 100%;
             border-collapse: collapse;
@@ -118,18 +121,18 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
       <body>
         <div class="header">
           <div class="clinic-name">${CLINIC_NAME}</div>
-          <div class="clinic-info">Electrohomopathy Clinic</div>
+          <div class="clinic-info">Electrohomeopathy Clinic</div>
         </div>
 
         <div class="patient-info">
           <div>
-            <strong>Patient:</strong> ${patient.name}<br>
+            <strong>Patient:</strong> ${toTitleCase(patient.name)}<br>
             <strong>Age/Gender:</strong> ${patient.age} years / ${patient.gender}<br>
             ${patient.phone ? `<strong>Phone:</strong> ${patient.phone}` : ''}
           </div>
           <div>
             <strong>Date:</strong> ${dateStr}<br>
-            ${patient.address ? `<strong>Address:</strong> ${patient.address}` : ''}
+            ${patient.address ? `<strong>Address:</strong> ${toTitleCase(patient.address)}` : ''}
           </div>
         </div>
 
@@ -147,9 +150,13 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
         </div>
         ` : ''}
 
-        ${visit.medicines && visit.medicines.length > 0 ? `
+        ${(visit.medicinesParagraph || (visit.medicines && visit.medicines.length > 0)) ? `
         <div class="section">
           <div class="section-title"><span class="rx-symbol">Rx</span> Prescription:</div>
+          ${visit.medicinesParagraph ? `
+          <div class="section-content medicines-paragraph">${visit.medicinesParagraph.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
+          ` : ''}
+          ${visit.medicines && visit.medicines.length > 0 ? `
           <table class="medicines-table">
             <thead>
               <tr>
@@ -170,6 +177,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
               `).join('')}
             </tbody>
           </table>
+          ` : ''}
         </div>
         ` : ''}
 
@@ -231,18 +239,18 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
         <div ref={printRef} className="p-4 sm:p-6 overflow-x-auto">
           <div className="text-center border-b-2 border-slate-300 pb-4 mb-4">
             <h2 className="text-lg sm:text-xl font-bold text-slate-900">{CLINIC_NAME}</h2>
-            <p className="text-xs sm:text-sm text-slate-500">Electrohomopathy Clinic</p>
+            <p className="text-xs sm:text-sm text-slate-500">Electrohomeopathy Clinic</p>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:justify-between gap-3 mb-4 p-3 bg-slate-50 rounded text-sm break-words">
             <div className="min-w-0">
-              <p><span className="font-medium">Patient:</span> {patient.name}</p>
+              <p><span className="font-medium">Patient:</span> {toTitleCase(patient.name)}</p>
               <p><span className="font-medium">Age/Gender:</span> {patient.age} years / {patient.gender}</p>
               {patient.phone && <p><span className="font-medium">Phone:</span> {patient.phone}</p>}
             </div>
             <div className="sm:text-right min-w-0">
               <p><span className="font-medium">Date:</span> {dateStr}</p>
-              {patient.address && <p><span className="font-medium">Address:</span> {patient.address}</p>}
+              {patient.address && <p><span className="font-medium">Address:</span> {toTitleCase(patient.address)}</p>}
             </div>
           </div>
 
@@ -260,11 +268,15 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
             </div>
           )}
 
-          {visit.medicines && visit.medicines.length > 0 && (
+          {(visit.medicinesParagraph || (visit.medicines && visit.medicines.length > 0)) && (
             <div className="mb-3 overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
               <p className="text-sm font-medium text-slate-700 mb-2">
                 <span className="text-lg mr-1">Rx</span> Prescription:
               </p>
+              {visit.medicinesParagraph && (
+                <p className="text-lg text-slate-700 whitespace-pre-wrap mb-2">{visit.medicinesParagraph}</p>
+              )}
+              {visit.medicines && visit.medicines.length > 0 && (
               <table className="w-full text-xs sm:text-sm border-collapse min-w-[280px]">
                 <thead>
                   <tr className="bg-slate-100">
@@ -285,6 +297,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
                   ))}
                 </tbody>
               </table>
+              )}
             </div>
           )}
 

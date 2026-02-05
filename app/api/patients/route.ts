@@ -4,6 +4,7 @@ import Patient from '@/models/Patient'
 import { getAuthFromRequest } from '@/lib/auth'
 import { canEditPatients } from '@/lib/rbac'
 import { getApiErrorResponse } from '@/lib/apiError'
+import { toTitleCase } from '@/lib/formatText'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -89,12 +90,12 @@ export async function POST(request: NextRequest) {
       )
     }
     const patient = await Patient.create({
-      name: String(name).trim(),
+      name: toTitleCase(String(name).trim()),
       age: Number(age),
-      gender: String(gender).trim(),
+      gender: toTitleCase(String(gender).trim()),
       phone: String(phone ?? '').trim(),
-      address: String(address ?? '').trim(),
-      location: String(location ?? '').trim(),
+      address: toTitleCase(String(address ?? '').trim()),
+      location: toTitleCase(String(location ?? '').trim()),
       ...(temperament ? { temperament: String(temperament).trim() } : {}),
     })
     return NextResponse.json(patient, { status: 201 })

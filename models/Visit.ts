@@ -11,6 +11,7 @@ const visitSchema = new mongoose.Schema({
   date: { type: Date, required: true },
   symptoms: { type: String, default: '' },
   diagnosis: { type: String, default: '' },
+  medicinesParagraph: { type: String, default: '' },
   medicines: [medicineSchema],
   notes: { type: String, default: '' },
 })

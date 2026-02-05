@@ -1,4 +1,4 @@
-export const CLINIC_NAME = 'Rezru Electrohomopathy'
+export const CLINIC_NAME = 'Rezru Electrohomeopathy'
 
 export const TEMPERAMENT_OPTIONS = [
   'Sanguine Temperament',
