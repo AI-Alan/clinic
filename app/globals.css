@@ -55,13 +55,13 @@
   }
 }
 
-/* Senior-friendly: larger base font, high contrast, relaxed line-height */
+/* Slightly larger base font, good readability */
 html {
-  font-size: 18px;
+  font-size: 17px;
 }
 @media (min-width: 768px) {
   html {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 

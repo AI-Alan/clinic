@@ -30,6 +30,7 @@ type Visit = {
   date: string
   symptoms: string
   diagnosis: string
+  medicinesParagraph?: string
   medicines: { name: string; dosage: string; duration: string }[]
   notes: string
 }
@@ -240,6 +241,7 @@ export default function PatientDetailPage() {
             {canEditVisit && showVisitForm && (
               <div className="mb-6 flex justify-center">
                 <VisitForm
+                  key={editingVisit ? editingVisit._id : 'new'}
                   patientId={id}
                   visitId={editingVisit?._id}
                   patientTemperament={patient.temperament ?? ''}
@@ -247,7 +249,8 @@ export default function PatientDetailPage() {
                     date: editingVisit.date,
                     symptoms: editingVisit.symptoms,
                     diagnosis: editingVisit.diagnosis,
-                    medicines: editingVisit.medicines,
+                    medicinesParagraph: editingVisit.medicinesParagraph ?? '',
+                    medicines: editingVisit.medicines ?? [],
                     notes: editingVisit.notes,
                   } : undefined}
                   onCancel={() => {

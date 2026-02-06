@@ -94,8 +94,8 @@ export default function VisitTimeline({ visits, onEdit, onDelete, onPrint }: Vis
                   </p>
                 )}
                 {v.medicinesParagraph && (
-                  <div className="text-lg sm:text-xl text-slate-700 mb-1 break-words whitespace-pre-wrap">
-                    <span className="font-medium text-slate-600">Medicines:</span>
+                  <div className="text-xl sm:text-2xl font-semibold text-slate-800 mb-1 break-words whitespace-pre-wrap">
+                    <span className="font-bold text-slate-700">Medicines:</span>
                     <p className="mt-0.5">{v.medicinesParagraph}</p>
                   </div>
                 )}

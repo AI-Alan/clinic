@@ -167,7 +167,7 @@ export default function VisitForm({ patientId, visitId, patientTemperament = '',
             onChange={(e) => setMedicinesParagraph(e.target.value)}
             rows={5}
             placeholder="Free-text prescription (e.g. remedy names, potency, dosage, duration)"
-            className="input-accent w-full text-lg min-h-[120px]"
+            className="input-accent w-full min-h-[120px] text-lg font-semibold"
           />
         </div>
         <div>

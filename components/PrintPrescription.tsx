@@ -87,7 +87,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
             color: #333;
           }
           .section-content { font-size: 14px; color: #555; }
-          .medicines-paragraph { font-size: 18px; line-height: 1.5; color: #333; }
+          .medicines-paragraph { font-size: 22px; font-weight: 600; line-height: 1.5; color: #111; }
           .medicines-table {
             width: 100%;
             border-collapse: collapse;
@@ -274,7 +274,7 @@ export default function PrintPrescription({ patient, visit, onClose }: PrintPres
                 <span className="text-lg mr-1">Rx</span> Prescription:
               </p>
               {visit.medicinesParagraph && (
-                <p className="text-lg text-slate-700 whitespace-pre-wrap mb-2">{visit.medicinesParagraph}</p>
+                <p className="text-xl font-semibold text-slate-800 whitespace-pre-wrap mb-2">{visit.medicinesParagraph}</p>
               )}
               {visit.medicines && visit.medicines.length > 0 && (
               <table className="w-full text-xs sm:text-sm border-collapse min-w-[280px]">
